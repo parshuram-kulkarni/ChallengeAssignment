@@ -2,21 +2,26 @@ package com.android.challengeassignment.fragments;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.challengeassignment.CalculatorActivity;
 import com.android.challengeassignment.R;
 import com.android.challengeassignment.calculation.Calculate;
+import com.android.challengeassignment.calculation.ChangeBorderColor;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BasicFragment extends Fragment implements Calculate {
+public class BasicFragment extends Fragment implements Calculate, ChangeBorderColor {
 
     Button addButton;
     Button subButton;
@@ -26,11 +31,11 @@ public class BasicFragment extends Fragment implements Calculate {
     EditText firstInput;
     EditText secondInput;
 
+
     double addResult;
     double subResult;
     double mulResult;
     double divResult;
-
 
     public BasicFragment() {  }
 
@@ -39,7 +44,7 @@ public class BasicFragment extends Fragment implements Calculate {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-    View view = inflater.inflate(R.layout.fragment_basic, container, false);
+     View view = inflater.inflate(R.layout.fragment_basic, container, false);
 
         addButton = view.findViewById(R.id.buttonAdd);
         subButton = view.findViewById(R.id.buttonSub);
@@ -54,44 +59,92 @@ public class BasicFragment extends Fragment implements Calculate {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                double a = Double.parseDouble(firstInput.getText().toString());
-                double b = Double.parseDouble(secondInput.getText().toString());
-                add(a, b);
-                result.setText(String.valueOf(addResult));
+                if(firstInput.getText().toString().isEmpty()){
+                    /*firstInput.setError("please enter the first number");*/
+                    Toast.makeText(getContext(),"please enter the first number",Toast.LENGTH_SHORT).show();
+                }
+
+               else if(secondInput.getText().toString().isEmpty()){
+                    /*secondInput.setError("please enter ");*/
+                    Toast.makeText(getContext(),"please enter the second number",Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    double a = Double.parseDouble(firstInput.getText().toString());
+                    double b = Double.parseDouble(secondInput.getText().toString());
+                    add(a, b);
+                    result.setText(String.valueOf(addResult)); }
             }
         });
 
         subButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(firstInput.getText().toString().isEmpty()){
+                    /*firstInput.setError("please enter the first number");*/
+                    Toast.makeText(getContext(),"please enter the first number",Toast.LENGTH_SHORT).show();
+                }
+
+                else if(secondInput.getText().toString().isEmpty()){
+                    /*secondInput.setError("please enter ");*/
+                    Toast.makeText(getContext(),"please enter the second number",Toast.LENGTH_SHORT).show();
+                }
+                else{
+
                 double a = Double.parseDouble(firstInput.getText().toString());
                 double b = Double.parseDouble(secondInput.getText().toString());
                 substract(a, b);
-                result.setText(String.valueOf(subResult));
+                result.setText(String.valueOf(subResult)); }
             }
         });
 
         mulButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(firstInput.getText().toString().isEmpty()){
+                   /* firstInput.setError("please enter the first number");*/
+                    Toast.makeText(getContext(),"please enter the first number",Toast.LENGTH_SHORT).show();
+                }
+
+               else if(secondInput.getText().toString().isEmpty()){
+                  /*  secondInput.setError("please enter ");*/
+                    Toast.makeText(getContext(),"please enter the second number",Toast.LENGTH_SHORT).show();
+                }
+                else{
                 double a = Double.parseDouble(firstInput.getText().toString());
                 double b = Double.parseDouble(secondInput.getText().toString());
                 multiply(a, b);
-                result.setText(String.valueOf(mulResult));
+                result.setText(String.valueOf(mulResult)); }
             }
         });
 
         divButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(firstInput.getText().toString().isEmpty()){
+                   /* firstInput.setError("please enter the first number");*/
+                    Toast.makeText(getContext(),"please enter the first number",Toast.LENGTH_SHORT).show();
+                }
+
+               else if(secondInput.getText().toString().isEmpty()){
+                    /*secondInput.setError("please enter ");*/
+                    Toast.makeText(getContext(),"please enter the second number",Toast.LENGTH_SHORT).show();
+                }
+                else{
                 double a = Double.parseDouble(firstInput.getText().toString());
                 double b = Double.parseDouble(secondInput.getText().toString());
                 divide(a, b);
-                result.setText(String.valueOf(divResult));
+                result.setText(String.valueOf(divResult));}
             }
         });
 
      return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        CalculatorActivity calculatorActivity = (CalculatorActivity) getActivity();
+        calculatorActivity.setColorChangeListener(this);
     }
 
     @Override
@@ -116,5 +169,11 @@ public class BasicFragment extends Fragment implements Calculate {
     public double divide(double a, double b) {
         divResult = a/b;
         return divResult;
+    }
+
+    @Override
+    public void changeColor(int buttonColor) {
+        RelativeLayout viewId = getView().findViewById(R.id.secondRelative);
+        viewId.setBackgroundColor(buttonColor);
     }
 }
