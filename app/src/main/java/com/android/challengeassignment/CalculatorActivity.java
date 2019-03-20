@@ -1,6 +1,7 @@
 package com.android.challengeassignment;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -18,26 +19,39 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.android.challengeassignment.calculation.ChangeBorderColor;
 import com.android.challengeassignment.fragments.BasicFragment;
 import com.android.challengeassignment.fragments.ScientificFragment;
 
 public class CalculatorActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener , View.OnClickListener {
 
     FragmentManager fragmentManager;
     Fragment mFragment;
+    ImageButton redButton;
+    ImageButton greenButton;
+    ImageButton blueButton;
 
     ViewPager viewPager;
+    CustomeAdapter customeAdapter;
+    BasicFragment fm;
+    ChangeBorderColor mChangeBorderColorListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        redButton = findViewById(R.id.btnRed);
+        greenButton = findViewById(R.id.btnGreen);
+        blueButton = findViewById(R.id.btnBlue);
         setSupportActionBar(toolbar);
-
+        addListener();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -50,16 +64,26 @@ public class CalculatorActivity extends AppCompatActivity
 
 
         /*********** Create a tab view ************/
-        TabLayout tabLayout = (TabLayout)findViewById(R.id.tablayout);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
 //        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        final CustomeAdapter customeAdapter = new CustomeAdapter(getSupportFragmentManager());
+        customeAdapter = new CustomeAdapter(getSupportFragmentManager());
         viewPager.setAdapter(customeAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
-        fragmentManager = getSupportFragmentManager();
-        mFragment = null;
+         fragmentManager = getSupportFragmentManager();
+         mFragment = null;
+    }
+
+    private void addListener() {
+        redButton.setOnClickListener(this);
+        greenButton.setOnClickListener(this);
+        blueButton.setOnClickListener(this);
+    }
+
+    public void setColorChangeListener(ChangeBorderColor changeBorderColorListener) {
+        mChangeBorderColorListener = changeBorderColorListener;
     }
 
     @Override
@@ -107,10 +131,6 @@ public class CalculatorActivity extends AppCompatActivity
         } else if (id == R.id.scientificCalculator) {
             mFragment = new ScientificFragment();
             viewPager.setCurrentItem(1);
-              /* Intent intent = new Intent(getApplicationContext(), SolutionActivity.class);
-            startActivity(intent);
-            Toast.makeText(this, "You have selected Bookmark Menu", Toast.LENGTH_SHORT).show();
-            return true;*/
         }
 
 //        if(mFragment != null){
@@ -126,4 +146,36 @@ public class CalculatorActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btnRed:
+                Toast.makeText(getApplicationContext(),"color change to red",Toast.LENGTH_SHORT).show();
+                mChangeBorderColorListener.changeColor(Color.RED);
+                Constant.border = Color.RED;
+                break;
+
+            case R.id.btnBlue:
+                Toast.makeText(getApplicationContext(),"color change to blue",Toast.LENGTH_SHORT).show();
+                mChangeBorderColorListener.changeColor(Color.BLUE);
+                Constant.border = Color.BLUE;
+                break;
+
+            case R.id.btnGreen:
+                Toast.makeText(getApplicationContext(),"color change to green",Toast.LENGTH_SHORT).show();
+                mChangeBorderColorListener.changeColor(Color.GREEN);
+                Constant.border = Color.GREEN;
+                break;
+
+            default:
+                break;
+        }
+
+        Fragment fr = (BasicFragment)customeAdapter.getItem(0);
+        ((BasicFragment) fr).myBorer(Constant.border);
+    }
+
+
 }
